@@ -12,57 +12,21 @@ A local memory system that enhances GitHub Copilot with persistent context about
 
 ## Prerequisites
 
-### 1. Install Podman (Vector Database Container)
+- **Podman** - Container runtime for Qdrant vector database
+- **Ollama** - Local LLM for embeddings
+- **Node.js** - Runtime for the application
 
-**macOS:**
+**→ See [Installation Guide](docs/INSTALL.md) for detailed setup instructions**
+
+Quick install:
 ```bash
-brew install podman
-podman machine init
-podman machine start
-```
+# macOS
+brew install podman ollama
+ollama pull nomic-embed-text
 
-**Linux:**
-```bash
-# Ubuntu/Debian
-sudo apt-get update
-sudo apt-get install podman
-
-# Fedora
-sudo dnf install podman
-
-# Arch Linux
-sudo pacman -S podman
-```
-
-**Windows:**
-```bash
-# Using winget
-winget install -e --id RedHat.Podman
-```
-
-### 2. Install Ollama (Local LLM Embeddings)
-
-**macOS:**
-```bash
-brew install ollama
-ollama serve  # Start the service
-```
-
-**Linux:**
-```bash
+# Linux
+sudo apt-get install podman  # or dnf/pacman
 curl -fsSL https://ollama.ai/install.sh | sh
-ollama serve  # Start the service
-```
-
-**Windows:**
-Download from [ollama.ai](https://ollama.ai) or:
-```bash
-winget install -e --id Ollama.Ollama
-```
-
-### 3. Pull Required Model
-
-```bash
 ollama pull nomic-embed-text
 ```
 
@@ -128,49 +92,22 @@ Ask GitHub Copilot: **"What frontend framework do we use?"**
 
 Copilot should mention React based on your stored memory!
 
-## CLI Examples
+## CLI Usage
 
-### Store Memories
+The CLI provides commands for managing memories directly from the terminal.
 
+**→ See [CLI Guide](docs/CLI.md) for complete documentation**
+
+Quick examples:
 ```bash
-# Add architectural decisions
-npm run cli -- add -u developer -c "Authentication uses JWT with refresh tokens"
-npm run cli -- add -u developer -c "Database is PostgreSQL with Prisma ORM"
-npm run cli -- add -u developer -c "Error handling uses custom AppError class"
-```
+# Add memory
+npm run cli -- add -u developer -c "We use React with TypeScript"
 
-### Search Memories
+# Search memories
+npm run cli -- search -u developer -q "React" -l 5
 
-```bash
-# Search for specific topics
-npm run cli -- search -u developer -q "authentication JWT" -l 5
-
-# Search for preferences
-npm run cli -- search -u developer -q "frontend React components"
-```
-
-### View Statistics
-
-```bash
-# Get memory count
+# Get statistics
 npm run cli -- stats -u developer
-```
-
-### Chat with Memory Context
-
-```bash
-# Ask questions with context
-npm run cli -- chat -u developer -m "How should I implement authentication?"
-```
-
-### Delete Memories
-
-```bash
-# Delete specific memory by ID
-npm run cli -- delete -i <memory-id>
-
-# Delete all memories for a user
-npm run cli -- delete-user -u developer
 ```
 
 ## Available Scripts
