@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest'
 import { randomUUID } from 'crypto'
-import { VectorStore } from '../vector-store.js'
+import { VectorStore } from './vector-store.js'
 
 describe('VectorStore', () => {
   let vectorStore: VectorStore
