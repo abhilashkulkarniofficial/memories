@@ -4,8 +4,8 @@
  * 
  * Allows running either HTTP or stdio-based MCP server
  * Usage:
- *   npm start              # HTTP server (default)
- *   npm start -- --stdio   # stdio server
+ *   npm start              # stdio server
+ *   npm start -- --stdio   # stdio server (explicit)
  *   npm start -- --http    # HTTP server (explicit)
  */
 
