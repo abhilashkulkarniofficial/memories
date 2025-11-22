@@ -1,6 +1,34 @@
 # GitHub Copilot Instructions - Memory Context Integration
 
-You are GitHub Copilot with access to a local memory system that stores project context, architectural decisions, coding patterns, and team preferences. This memory system runs at `http://localhost:3000` and helps you provide context-aware, project-specific responses.
+You are GitHub Copilot with access to a local memory system that stores project context, architectural decisions, coding patterns, and team preferences.
+
+## Integration Methods
+
+This memory system provides **two integration methods**:
+
+### 1. **MCP Tools (PREFERRED)** - Native VS Code Integration
+The memory system is available as an MCP server configured in `.vscode/mcp.json`. When available, **ALWAYS prefer using MCP tools** over HTTP endpoints.
+
+**Available MCP Tools:**
+- `mcp_memories-mcp_search_memories` - Search for relevant memories
+- `mcp_memories-mcp_add_memory` - Store new information
+- `mcp_memories-mcp_get_memory_stats` - Get memory statistics
+- `mcp_memories-mcp_refine_prompt_with_memories` - Auto-enhance prompts with context
+- `mcp_memories-mcp_store_conversation` - Save Q&A pairs
+
+**Advantages:**
+- ✅ Native VS Code integration
+- ✅ Better performance (no HTTP overhead)
+- ✅ Automatic tool discovery
+- ✅ Type-safe parameters
+
+### 2. **HTTP API (FALLBACK)** - Manual Integration
+If MCP tools are not available, fall back to HTTP API at `http://localhost:3000`.
+
+**When to use HTTP:**
+- MCP tools are disabled or unavailable
+- Running outside VS Code environment
+- Explicit user request for HTTP method
 
 ## Core Workflow
 
@@ -8,7 +36,24 @@ For EVERY user request, follow this 3-step workflow:
 
 ### 1. SEARCH MEMORIES (Before Responding)
 
-Before generating any response, search the memory system for relevant context:
+Before generating any response, search the memory system for relevant context.
+
+**Method A: Using MCP Tools (PREFERRED)**
+
+Use the native MCP tool when available:
+
+```typescript
+// Call the MCP tool
+mcp_memories-mcp_search_memories({
+  userId: "developer",
+  query: "<extract key terms from user's question>",
+  limit: 5
+})
+```
+
+**Method B: Using HTTP API (FALLBACK)**
+
+If MCP tools are unavailable, use HTTP:
 
 ```http
 POST http://localhost:3000/execute
@@ -31,10 +76,29 @@ Content-Type: application/json
 
 ### 2. GENERATE RESPONSE (Using Context)
 
-Use the retrieved memories to inform your response:
+Use the retrieved memories to inform your response.
 
+**MCP Tool Response Structure:**
+```json
+{
+  "results": [
+    {
+      "text": "Authentication uses JWT tokens with refresh tokens",
+      "score": 0.85,
+      "timestamp": 1763773127992
+    },
+    {
+      "text": "We use bcrypt for password hashing",
+      "score": 0.72,
+      "timestamp": 1763773127992
+    }
+  ],
+  "count": 2
+}
+```
+
+**HTTP API Response Structure:**
 ```javascript
-// Example response structure
 {
   "success": true,
   "result": [
@@ -68,7 +132,19 @@ This aligns with your existing [cite another memory] approach.
 
 ### 3. STORE CONVERSATION (After Responding)
 
-After providing a helpful response, store the Q&A pair:
+After providing a helpful response, store the Q&A pair.
+
+**Method A: Using MCP Tools (PREFERRED)**
+
+```typescript
+mcp_memories-mcp_store_conversation({
+  userId: "developer",
+  question: "<original user question>",
+  answer: "<your generated response>"
+})
+```
+
+**Method B: Using HTTP API (FALLBACK)**
 
 ```http
 POST http://localhost:3000/execute
@@ -165,10 +241,12 @@ This will help me provide more accurate guidance aligned with your project.
 
 ## Available Tools
 
-Access via `POST http://localhost:3000/execute`:
+Access via MCP tools (preferred) or `POST http://localhost:3000/execute` (fallback):
 
 ### 1. search_memories
 Search for relevant context based on query.
+
+**MCP Tool:** `mcp_memories-mcp_search_memories`
 
 **Arguments:**
 - `userId` (string): User identifier (use "developer" for general queries)
@@ -180,6 +258,8 @@ Search for relevant context based on query.
 ### 2. store_conversation
 Save Q&A pairs for future reference.
 
+**MCP Tool:** `mcp_memories-mcp_store_conversation`
+
 **Arguments:**
 - `userId` (string): User identifier
 - `question` (string): Original user question
@@ -189,6 +269,8 @@ Save Q&A pairs for future reference.
 
 ### 3. refine_prompt_with_memories
 Automatically enhance a prompt with relevant memories.
+
+**MCP Tool:** `mcp_memories-mcp_refine_prompt_with_memories`
 
 **Arguments:**
 - `userId` (string): User identifier
@@ -200,6 +282,8 @@ Automatically enhance a prompt with relevant memories.
 ### 4. add_memory
 Store new information explicitly.
 
+**MCP Tool:** `mcp_memories-mcp_add_memory`
+
 **Arguments:**
 - `userId` (string): User identifier
 - `content` (string): Information to store
@@ -209,6 +293,8 @@ Store new information explicitly.
 
 ### 5. get_memory_stats
 Get count of stored memories.
+
+**MCP Tool:** `mcp_memories-mcp_get_memory_stats`
 
 **Arguments:**
 - `userId` (string): User identifier
@@ -239,7 +325,15 @@ GET http://localhost:3000/stats/developer
 **User:** "How should I implement user authentication?"
 
 **Step 1 - Search:**
-```json
+```typescript
+// MCP Tool (PREFERRED)
+mcp_memories-mcp_search_memories({
+  userId: "developer",
+  query: "authentication auth login JWT tokens security",
+  limit: 5
+})
+
+// OR HTTP Fallback
 POST /execute
 {
   "tool": "search_memories",
@@ -257,7 +351,15 @@ POST /execute
 "Based on your project's architecture, you're using JWT tokens with refresh tokens stored in httpOnly cookies. Here's how to implement this..."
 
 **Step 3 - Store:**
-```json
+```typescript
+// MCP Tool (PREFERRED)
+mcp_memories-mcp_store_conversation({
+  userId: "developer",
+  question: "How should I implement user authentication?",
+  answer: "Based on your JWT approach with refresh tokens..."
+})
+
+// OR HTTP Fallback
 POST /execute
 {
   "tool": "store_conversation",
@@ -274,7 +376,15 @@ POST /execute
 **User:** "I decided to use PostgreSQL with Prisma ORM"
 
 **Action - Store:**
-```json
+```typescript
+// MCP Tool (PREFERRED)
+mcp_memories-mcp_add_memory({
+  userId: "developer",
+  content: "Database: PostgreSQL with Prisma ORM for type-safe database access",
+  metadata: {"type": "architecture", "category": "database"}
+})
+
+// OR HTTP Fallback
 POST /execute
 {
   "tool": "add_memory",

@@ -389,7 +389,29 @@ server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
 async function main() {
   const transport = new StdioServerTransport()
   await server.connect(transport)
-  console.error('Memory Context MCP Server running on stdio')
+  
+  console.error('🤖 Memory Context MCP Server running on stdio')
+  console.error('')
+  console.error('To use this server in VS Code, add to .vscode/mcp.json:')
+  console.error('')
+  console.error(JSON.stringify({
+    servers: {
+      'memories-mcp': {
+        command: 'npm',
+        args: ['run', 'mcp'],
+        cwd: process.cwd(),
+        type: 'stdio'
+      }
+    }
+  }, null, 2))
+  console.error('')
+  console.error('Available MCP Tools:')
+  console.error('  • mcp_memories-mcp_search_memories')
+  console.error('  • mcp_memories-mcp_add_memory')
+  console.error('  • mcp_memories-mcp_get_memory_stats')
+  console.error('  • mcp_memories-mcp_refine_prompt_with_memories')
+  console.error('  • mcp_memories-mcp_store_conversation')
+  console.error('')
 }
 
 main().catch((error) => {
