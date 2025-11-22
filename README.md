@@ -7,8 +7,9 @@ A local memory system that enhances GitHub Copilot with persistent context about
 - 🤖 **GitHub Copilot Integration** - Automatic context injection into Copilot chats
 - 🧠 **Semantic Memory** - Vector-based similarity search
 - ✅ **100% Local** - No cloud services, all data stays on your machine
-- � **HTTP & Stdio MCP** - Multiple integration methods
+- 🔌 **HTTP & Stdio MCP** - Multiple integration methods
 - 📊 **CLI Tools** - Manage memories from command line
+- 🧪 **Tested** - Unit and integration tests with Vitest
 
 ## Prerequisites
 

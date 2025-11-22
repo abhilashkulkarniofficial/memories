@@ -10,6 +10,9 @@
     "mcp": "node mcp-server.js",
     "mcp:http": "tsx src/mcp-http-server.ts",
     "cli": "tsx src/cli.ts",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage",
     "podman:up": "podman-compose up -d",
     "podman:down": "podman-compose down"
   },
@@ -21,7 +24,7 @@
     "ollama",
     "qdrant"
   ],
-  "author": "",
+  "author": "Abhilash Kulkarni",
   "license": "MIT",
   "dependencies": {
     "@hono/node-server": "^1.19.6",
@@ -35,7 +38,9 @@
   },
   "devDependencies": {
     "@types/node": "^20.11.0",
+    "@vitest/ui": "^4.0.13",
     "tsx": "^4.7.0",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "vitest": "^4.0.13"
   }
 }
