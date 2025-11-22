@@ -1,15 +1,15 @@
-# GitHub Copilot Memory System
+# Yet another Semantic Persistent Memory
 
-A local memory system that enhances GitHub Copilot with persistent context about your project, preferences, and decisions.
+But it's faster, smarter, compact and 100% local.
 
 ## Features
 
-- 🤖 **GitHub Copilot Integration** - Automatic context injection into Copilot chats
-- 🧠 **Semantic Memory** - Vector-based similarity search
-- ✅ **100% Local** - No cloud services, all data stays on your machine
-- 🔌 **HTTP & Stdio MCP** - Multiple integration methods
+- 🧠 **Qdrant for Semantic Memory** - Smaller and faster than Milvus guaranteed
+- **Ollama RAGs for encoding and search** - Because there's nothing like too many AI assistants
+- ✅ **100% Local** - Ensuring your API keys stay on your machine
+- 🔌 **HTTP & Stdio MCP servers** - Two is better than one obviously
 - 📊 **CLI Tools** - Manage memories from command line
-- 🧪 **Tested** - Unit and integration tests with Vitest
+- **Hono based MCP server**
 
 ## Prerequisites
 
@@ -45,13 +45,11 @@ npm install
 # Start Qdrant vector database
 npm run podman:up
 
-# Start MCP HTTP Server (port 3000)
-npm run mcp:http
-```
-
-**Or start Copilot API server (port 3001):**
-```bash
+# Start MCP Stdio Server (port 3001)
 npm start
+
+# Or start MCP HTTP Server (port 3000)
+npm start -- -http
 ```
 
 ### 3. Verify Services
@@ -64,13 +62,18 @@ curl http://localhost:3000/health
 curl http://localhost:6333/collections
 ```
 
-## VS Code Setup
+### 4. Other scripts
 
-### 1. Configure Copilot Instructions
+```bash
+npm run cli            # Run CLI commands
+npm run podman:down    # Stop Qdrant database
+```
 
-Copy `.github/copilot-instructions.md` file to your repository.
+## VS Code MCP Integration
 
-### 2. Keep MCP Server Running
+### 1. Configure mcp.json
+
+Start the server and 
 
 ```bash
 npm run mcp:http
@@ -93,33 +96,15 @@ Ask GitHub Copilot: **"What frontend framework do we use?"**
 
 Copilot should mention React based on your stored memory!
 
+### (Optional) Configure Copilot Instructions
+
+Copy `.github/copilot-instructions.md` file to your repository.
+
 ## CLI Usage
 
 The CLI provides commands for managing memories directly from the terminal.
 
 **→ See [CLI Guide](docs/CLI.md) for complete documentation**
-
-Quick examples:
-```bash
-# Add memory
-npm run cli -- add -u developer -c "We use React with TypeScript"
-
-# Search memories
-npm run cli -- search -u developer -q "React" -l 5
-
-# Get statistics
-npm run cli -- stats -u developer
-```
-
-## Available Scripts
-
-```bash
-npm run mcp:http       # Start MCP HTTP server (port 3000)
-npm start              # Start Copilot API server (port 3001)
-npm run cli            # Run CLI commands
-npm run podman:up      # Start Qdrant database
-npm run podman:down    # Stop Qdrant database
-```
 
 ## Configuration
 
