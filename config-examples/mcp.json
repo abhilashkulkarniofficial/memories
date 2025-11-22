@@ -1,0 +1,11 @@
+{
+	"servers": {
+		"memories-mcp": {
+			"command": "npm",
+			"args": ["run", "mcp"],
+			"type": "stdio",
+			"cwd": "/path/to/memories"
+		}
+	},
+	"inputs": []
+}
